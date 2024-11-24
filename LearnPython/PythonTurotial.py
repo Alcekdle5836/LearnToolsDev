@@ -5,7 +5,7 @@ y = int(3)          # y will be 3
 z = float(3)        # z will be 3.0
 
 ## 变量命名规范
-2my_var = "John"    #不能以数字开头，需要以字母或下划线开头
+#2my_var = "John"    #不能以数字开头，需要以字母或下划线开头
 my_var = "test"     # 在python里面约定俗成小写+下划线
 
 ## 变量区分大小写
@@ -71,7 +71,7 @@ for index in range(len(fruit_list)):
 ## If else
 a = 1
 b = 2
- if a > b:
+if a > b:
     print("a is bigger than b")
 elif a == b:
     print("a and b are equal")
@@ -95,7 +95,7 @@ print(a.split('e'))         # ['H','llo,world!']
 print(a.split(',')[0])      # 'Hello'
 
 ## 字符串格式化输出
-number = 3  
+number = 3
 item = '鼠标'
 price = 49.9
 my_order = "I want {} pieces of item {} for {} yuan"        # 占位符
@@ -128,5 +128,5 @@ fruit_list = ["apple", "banana" , "cherry"]
 for item in fruit_list:
     print(item)
 
-for item in range(len(fruit_list)):         # length:3
-    print(fruit_list[item])
+for index in range(len(fruit_list)):         # length:3
+    print(fruit_list[index])
