@@ -63,14 +63,14 @@ class HelloWorldPanel(bpy.types.Panel):
         col.label(text="1.简单Operator")
         col.operator("mesh.primitive_cube_add",text="创建cube")
  
-        col.operator("example.add_cube_size",text="创建自定义cube")     # TODO:example 是啥东西？operator是不是默认就是button？
+        col.operator("example.add_cube_size",text="创建自定义cube")
         col.prop(props, "cube_size", text = "cube尺寸")
         
         col.label(text="2.进阶Operator")
         row = layout.row()
 
         row.label(text=props.obj_name)
-        row.prop(props, "case_option", text = "大小写")                 # 这里的case_option在属性中定义，继承BoolProperty。所以是toggle？
+        row.prop(props, "case_option", text = "大小写")
         
         col = layout.column()
         col.operator("example.set_unit",text="设置单位")
@@ -97,7 +97,6 @@ class HelloWorldProp(bpy.types.PropertyGroup):
         name = "",
         default = False,
         update = rename_obj_update,
-        # TODO:这里的update是啥意思？
     )
     
     enum_prop: EnumProperty(
@@ -110,10 +109,9 @@ class HelloWorldProp(bpy.types.PropertyGroup):
 # 新建cube
 class AddCubeOperator(bpy.types.Operator):
     bl_idname = "example.add_cube_size"     # 这里的双引号里面的内容就是随便写的，代表使用一个string作为调用方法时的唯一ID而已
-    # TODO:猜测idname在实际使用中代替Founction名称发挥调用方法的作用
-    bl_label = "Add Cube Size"              # TODO:bl_label有啥用？整个脚本中都没用到啊
+    bl_label = "Add Cube Size"
 
-    def execute(self,context):      # TODO:execute和update看ppt
+    def execute(self,context):
         props = context.scene.simple_props
         bpy.ops.mesh.primitive_cube_add(size=props.cube_size, enter_editmode=True, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
 
