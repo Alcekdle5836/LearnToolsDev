@@ -15,7 +15,6 @@ bl_info = {
     "description" : "",
     "blender" : (3, 2, 0),
     "version" : (0, 0, 1),
-    # 备注该插件添加到blender中的位置
     "location" : "3D Viewport > Sidebar > TEST",
     "warning" : "",
     "category" : "Development"
@@ -23,8 +22,7 @@ bl_info = {
 
 # 对于物体大小重命名修改
 def rename_obj_update(self,context):
-    props = context.scene.simple_props      # 获取当前场景中属性
-    # context.scene: This accesses the current scene in Blender.
+    props = context.scene.simple_props
     if props.case_option:
         props.obj_name = props.obj_name.upper()
     else:
@@ -51,7 +49,7 @@ def obj_list_update(self,context):
 #UI面板
 class HelloWorldPanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_SIMPLE_ADDON"
-    bl_label = "Hello World" #显示标题
+    bl_label = "Hello World"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Simple Tool"
@@ -151,18 +149,10 @@ def register():
     for bclass in blender_classes:
         bpy.utils.register_class(bclass)
     bpy.types.Scene.simple_props = PointerProperty(type=HelloWorldProp)
-    # 为Scene定义了一个新的属性simple_props，并将一个指向HelloWorldProp类Instance的指针赋予它
-    # Add a new property to the Scene object in Blender that is a reference to an instance of the HelloWorldProp class. 
-    # This allows you to associate an instance of HelloWorldProp with each Scene object in Blender.
-    # The PointerProperty(type=HelloWorldProp) is creating a new pointer property that points to an instance of the HelloWorldProp class
 
 def unregister():
     del bpy.types.Scene.simple_props
     for bclass in blender_classes:
         bpy.utils.unregister_class(bclass)
 
-# Determine whether the script is being run directly or being imported as a module.
-# 当脚本直接运行的时候，__name__ 设置为“__main__”。当脚本作为模块导入时，__name__ 将设置为脚本/模块的名称。
-# if __name__ == "__main__":
-#     register()
 register()
