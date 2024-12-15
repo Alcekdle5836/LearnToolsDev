@@ -27,6 +27,11 @@ class MyProperties(PropertyGroup):
         subtype = 'DIR_PATH'
     )
 
+    time : IntProperty(
+        name = "Time",
+        default = 100,
+    )
+
 # function
 class MyFunctions_1(bpy.types.Operator):
     bl_idname = "print.folderpath"
@@ -34,7 +39,8 @@ class MyFunctions_1(bpy.types.Operator):
 
     def execute(self,context):
         props = context.scene.simple_props
-        print("%s" % props.folder_path)
+        print("Hello, folder_path is %s _abcde %d " % (props.folder_path, props.time))
+        # print(props.folder_path)
         return {'FINISHED'}
 
 class MyFunctions_2(bpy.types.Operator):
