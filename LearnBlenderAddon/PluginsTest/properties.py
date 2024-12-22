@@ -9,7 +9,12 @@ from bpy.props import(
 class SecondProperties(PropertyGroup):
     new_name : StringProperty(
         name = "",
-        default = "20241215"
+        default = "this is new name"
+    )
+
+    new_collection : StringProperty(
+        name = "",
+        default = "this is new collection",
     )
 
 blender_classes = [

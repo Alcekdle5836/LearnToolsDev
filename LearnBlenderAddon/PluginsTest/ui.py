@@ -10,11 +10,37 @@ class RenameObject(bpy.types.Panel):
     def draw(self,context):   
         props = context.scene.second_props
         layout = self.layout
-        layout.prop(props,"new_name",text = "NewName11111")
-        layout.operator("object.rename",text="555555555")
+        layout.prop(props,"new_name",text = "New Name")
+        layout.operator("object.rename",text="物体重命名")
+
+class SetCollection(bpy.types.Panel):
+    bl_idname = "SetCollection"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_label = "分组"
+    bl_category = "BaseAddons"
+
+    def draw(self,context):
+        props = context.scene.second_props
+        layout = self.layout
+        layout.prop(props,"new_collection",text = "NewCollection")
+        layout.operator("objects.new_collection",text = "创建Collection")
+
+class CreatePrimitive(bpy.types.Panel):
+    bl_idname = "OBJECT_PT_SIMPLE_ADDON"
+    bl_label = "创建立方体"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "BaseAddons"
+
+    def draw(self, context):
+        props = context.scene.second_props
+        layout = self.layout
 
 blender_classes = [
     RenameObject,
+    SetCollection,
+    CreatePrimitive,
 ]
 
 def register():
