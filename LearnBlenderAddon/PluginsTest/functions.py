@@ -41,9 +41,20 @@ class CreateNewCollection(bpy.types.Operator):
             self.report({'INFO'}, " Moved to " + target_collection.name + ":" + obj.name)
         return {'FINISHED'}
 
+class CreateCube(bpy.types.Operator):
+    bl_idname = "cube.create"
+    bl_label = "create cube"
+
+    # 豆包 Marscode / codefuse
+    def execute(self,context):
+        props = context.scene.second_props
+        bpy.ops.mesh.primitive_monkey_add(size = props.size_monkey ,enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+        return {'FINISHED'}
+
 blender_classes = [
     RenameObjectOperator,
     CreateNewCollection,
+    CreateCube,
 ]
 
 def register():

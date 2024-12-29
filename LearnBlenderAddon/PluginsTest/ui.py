@@ -36,6 +36,10 @@ class CreatePrimitive(bpy.types.Panel):
     def draw(self, context):
         props = context.scene.second_props
         layout = self.layout
+        layout.operator("cube.create", text = "创建猴")
+        layout.prop(props,"size_monkey", text = "monkey size111")
+        layout.operator("mesh.primitive_cube_add", text = "创建立方体")
+        layout.prop(props,"color_enum", text = "物体列表")
 
 blender_classes = [
     RenameObject,
