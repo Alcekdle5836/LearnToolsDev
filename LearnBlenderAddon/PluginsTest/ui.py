@@ -41,10 +41,36 @@ class CreatePrimitive(bpy.types.Panel):
         layout.operator("mesh.primitive_cube_add", text = "创建立方体")
         layout.prop(props,"color_enum", text = "物体列表")
 
+class DynamicEnum(bpy.types.Panel):
+    bl_idname = "Enum"
+    bl_label = "动态枚举"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "BaseAddons"
+
+    def draw(self,context):
+        props = context.scene.second_props
+        layout = self.layout
+        # 静态属性
+        layout.label(text="动态枚举 - 静态属性")
+        # row / column
+        row = layout.row()
+        row.label(text = "建筑多级分类:")
+        row.prop(props,"dynamic_enum_1",text="第1级")
+        row.prop(props,"dynamic_enum_2",text="第2级")
+        row.prop(props,"dynamic_enum_3",text="第3级")
+        row.prop(props,"dynamic_enum_4",text="第4级")
+        # row = layout.row()
+        # 挤在一行
+        # col 和 layout是相同效果
+        col = layout.column()
+        col.label(text="新标签：" + props.new_label_name)
+
 blender_classes = [
     RenameObject,
     SetCollection,
     CreatePrimitive,
+    DynamicEnum,
 ]
 
 def register():

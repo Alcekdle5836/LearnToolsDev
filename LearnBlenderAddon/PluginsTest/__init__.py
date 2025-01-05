@@ -1,12 +1,12 @@
 bl_info = {
     "name" : "example addon",
-    "author" : "Johnny",
+    "author" : "课程插件",
     "description" : "",
     "blender" : (2, 80, 0),
     "version" : (0, 0, 1),
     "location" : "",
     "warning" : "",
-    "category" : "Generic"
+    "category" : "课程插件"
 }
 
 if "bpy" in locals():

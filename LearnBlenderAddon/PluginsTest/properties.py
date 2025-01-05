@@ -7,6 +7,10 @@ from bpy.props import(
     EnumProperty,
 )
 
+def update_function(self,context):
+    self.new_label_name = self.dynamic_enum_1 + '/' + self.dynamic_enum_2 + '/' + self.dynamic_enum_3
+    print("enum property has been update!")
+
 def obj_list_callback(self,context):
     res = [] 
     objs = bpy.data.objects
@@ -48,6 +52,56 @@ class SecondProperties(PropertyGroup):
         # 动态写法
         items = obj_list_callback,
     )
+
+    dynamic_enum_1 : EnumProperty(
+        name="",
+        items=[
+            ("1","1",""),
+            ("2","2",""),
+            ("3","3",""),
+            ("4","4",""),
+        ],
+        update = update_function,
+    )
+
+    dynamic_enum_2 : EnumProperty(
+        name="",
+        items=[
+            ("建筑_index","建筑",""),
+            ("多物件组装_index","多物件组装",""),
+            ("3_index","3",""),
+            ("4_index","4",""),
+        ],
+        update = update_function,
+    )
+
+    dynamic_enum_3 : EnumProperty(
+        name="",
+        items=[
+            ("1","1",""),
+            ("2","2",""),
+            ("3","3",""),
+            ("4","4",""),
+        ],
+        update = update_function,
+    )
+
+    dynamic_enum_4 : EnumProperty(
+        name="",
+        items=[
+            ("1","1",""),
+            ("2","2",""),
+            ("3","3",""),
+            ("4","4",""),
+        ],
+        update = update_function,
+    )
+
+    new_label_name : StringProperty(
+        name = "",
+        default = ""
+    )
+
 blender_classes = [
     SecondProperties,
 ]
