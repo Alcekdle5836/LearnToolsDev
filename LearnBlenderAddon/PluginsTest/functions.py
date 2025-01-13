@@ -1,4 +1,7 @@
 import bpy
+import json
+
+json_data = []
 
 class RenameObjectOperator(bpy.types.Operator):
     bl_idname = "object.rename"
@@ -51,10 +54,75 @@ class CreateCube(bpy.types.Operator):
         bpy.ops.mesh.primitive_monkey_add(size = props.size_monkey ,enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
         return {'FINISHED'}
 
+# 导入json文件
+class Import_Json(bpy.types.Operator):
+    bl_idname = "file.json_import"
+    bl_label = "Import_Json"
+
+    def execute(self, context):
+        props = context.scene.second_props
+        filepath = props.path_json_string
+        with open(filepath, 'r', encoding='utf-8') as JsonFile:
+            json_read = JsonFile.read()
+        global json_data
+        json_data = json.loads(json_read)
+
+        # bpy.ops.info({'report'}, json_data)
+        print("Import Success : json_data")
+        props.json_state_bool = True
+        return {'FINISHED'}
+
+# 第一级：建筑 / 多物件 / 单物件
+def GetBranch_1(self,context):
+    props = bpy.context.scene.second_props
+    branch_1 = []
+    if(props.json_state_bool):
+        index = 0
+        # TODO：json_data全局变量
+        for item in json_data[0]['topic']['topics']:
+            branch_1.append((str(index) , item['title'] , ""))
+            # 这一行是类比enumproperty的格式写的，写法请见properties.py搜索“写法存档：常规枚举属性”
+            index += 1
+    else:
+        branch_1 = [
+            ('0', '未导入', ''),
+            ('0', '未导入', ''),
+            ('0', '未导入', '')
+        ]
+    return branch_1
+
+def GetBranch_2(self,context):
+    props = bpy.context.scene.second_props
+    if(props.json_state_bool):
+        index = 0
+        branch_2 = []
+        for i in json_data[0]['topic']['topics'][int(props.enum_branch_1_prop)]['topics']:
+            branch_2.append((str(index) , i['title'] , ""))
+            index += 1
+        # for i in range(len(branch_2)):
+        #     print(branch_2[i])
+        return branch_2
+    else:
+        return []
+
+# 清空 json数据
+class Clear_Json(bpy.types.Operator):
+    bl_idname = "file.json_clear"
+    bl_label = "Clear_Json"
+
+    def execute(self, context):
+        global json_data
+        json_data = []
+        props = context.scene.second_props
+        props.json_state_bool = False
+        return {'FINISHED'}
+
 blender_classes = [
     RenameObjectOperator,
     CreateNewCollection,
     CreateCube,
+    Import_Json,
+    Clear_Json,
 ]
 
 def register():

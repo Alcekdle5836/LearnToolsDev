@@ -1,10 +1,12 @@
 import bpy
+from . import functions
 from bpy.types import PropertyGroup
 from bpy.props import(
     IntProperty,
     StringProperty,
     PointerProperty,
     EnumProperty,
+    BoolProperty,
 )
 
 def update_function(self,context):
@@ -22,6 +24,17 @@ def obj_list_callback(self,context):
     if len(objs) == 0:
         res.append(('!','!',''))
     return res
+
+def get_new_name(self , context):
+    # ('0', '建筑', ''), ('1', '多物件组装', ''), ('2', '单物件', '')
+    name_json_1 = functions.GetBranch_1(self, context)[int(self.enum_branch_1_prop)][1].split('_' , -1)[0]
+    name_json_2 = functions.GetBranch_2(self, context)[int(self.enum_branch_2_prop)][1].split('_' , -1)[0] 
+    name_json_3 = self.enum_branch_4_prop
+    return name_json_1  + ' / ' + name_json_2 + ' / ' + name_json_3
+
+def update_new_name(self , context):
+    self.new_name_string = self.enum_branch_1_prop + ' / ' + self.enum_branch_2_prop + ' / ' + self.enum_branch_4_prop
+    self.new_name_string_2 = get_new_name(self,context)
 
 class SecondProperties(PropertyGroup):
     new_name : StringProperty(
@@ -102,6 +115,58 @@ class SecondProperties(PropertyGroup):
         default = ""
     )
 
+    # json文件路径
+    path_json_string : StringProperty(
+        name = "",
+        # TODO:默认路径
+        default = r"LearnToolsDev/LearnBlenderAddon/Script/NewPattern.json",
+        subtype = 'FILE_PATH',              # 用于添加文件夹图标
+    )
+
+    # json数据是否已导入
+    json_state_bool : BoolProperty(
+        name = "",
+        default = False,        # 默认flase为空
+    )
+
+    new_name_string : StringProperty(
+    name = "",
+    default = "default",
+    )
+
+    new_name_string_2 : StringProperty(
+        name = "",
+        default = "default",
+    )
+
+# 建筑配置
+    enum_branch_1_prop: EnumProperty(
+        name = "第1级",
+        items = functions.GetBranch_1,
+        update = update_new_name,
+        default=0,
+    )
+
+    enum_branch_2_prop: EnumProperty(
+        name = "第2级",
+        items = functions.GetBranch_2,
+        default= 0,
+        update = update_new_name,
+    )
+
+    enum_branch_4_prop: EnumProperty(
+        name = "第4级",
+        items = [
+            ("A","A",""),
+            ("B","B",""),
+            ("C","C",""),
+            ("D","D",""),
+            ("E","E",""),
+        ],
+        default=0,
+        update = update_new_name,
+    )
+
 blender_classes = [
     SecondProperties,
 ]
@@ -114,3 +179,4 @@ def register():
 def unregister():
     for b_class in blender_classes:
         bpy.utils.unregister_class(b_class)
+    del bpy.types.Scene.second_props

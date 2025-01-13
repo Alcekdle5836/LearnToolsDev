@@ -52,19 +52,29 @@ class DynamicEnum(bpy.types.Panel):
         props = context.scene.second_props
         layout = self.layout
         # 静态属性
-        layout.label(text="动态枚举 - 静态属性")
-        # row / column
+        layout.label(text="动态枚举")
+        layout.prop(props,"path_json_string",text="Json配置表文件路径")
         row = layout.row()
-        row.label(text = "建筑多级分类:")
-        row.prop(props,"dynamic_enum_1",text="第1级")
-        row.prop(props,"dynamic_enum_2",text="第2级")
-        row.prop(props,"dynamic_enum_3",text="第3级")
-        row.prop(props,"dynamic_enum_4",text="第4级")
-        # row = layout.row()
-        # 挤在一行
-        # col 和 layout是相同效果
+        row.operator("file.json_import",text="导入Json")
+        row.operator("file.json_clear", text='清空 Json')
+        # TODO:其他模式可以参考文档
+        # row.alignment = 'EXPAND'
+
+        row = layout.row()
+        # row.label(text = "建筑多级分类:")
+        # row.prop(props,"dynamic_enum_1",text="第1级")
+        # row.prop(props,"dynamic_enum_2",text="第2级")
+        # row.prop(props,"dynamic_enum_3",text="第3级")
+        # row.prop(props,"dynamic_enum_4",text="第4级")
+        row = layout.row()
+        row.label(text="建筑命名列表：")
+        row.prop(props,"enum_branch_1_prop")
+        row.prop(props,"enum_branch_2_prop")
+        row.prop(props,"enum_branch_4_prop")
         col = layout.column()
-        col.label(text="新标签：" + props.new_label_name)
+        row = layout.row()
+        row.label(text="新命名index：" + props.new_name_string)
+        row.label(text="新命名名称：" + props.new_name_string_2)
 
 blender_classes = [
     RenameObject,
