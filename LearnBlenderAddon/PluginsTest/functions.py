@@ -1,7 +1,19 @@
 import bpy
 import json
+import mathutils
 
 json_data = []
+
+# 当前选中物体的xyz的最小最大值
+# 无穷 infinite
+max_z = 0
+min_z = 0
+
+max_x = 0
+min_x = 0
+
+max_y = 0
+min_y = 0
 
 class RenameObjectOperator(bpy.types.Operator):
     bl_idname = "object.rename"
@@ -117,12 +129,129 @@ class Clear_Json(bpy.types.Operator):
         props.json_state_bool = False
         return {'FINISHED'}
 
+# 通过游标的位置，移动轴心点至特定XYZ
+# 游标：标志
+def MovePivot(X , Y , Z):
+    saved_location = bpy.context.scene.cursor.location.copy()       # 当前游标位置
+    # Move the cursor to the location you want the new pivot point to be
+    obj = bpy.context.active_object
+    bpy.context.scene.cursor.location = mathutils.Vector((X, Y, Z))
+
+    # Set the origin to the cursor's location
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+    # 可以将轴心点移动到特定位置，但是无法将轴心点移动到给定位置
+    # 如果想直接移动，可以结合3D游标实现
+
+    # Restore the cursor's location
+    bpy.context.scene.cursor.location = saved_location
+
+    # 当遇到全局变量被修改的情况时，需要尤其考虑全局变量是否需要重置
+    global max_z
+    max_z = 0
+
+    global max_x
+    max_x = 0
+
+    global max_y
+    max_y = 0
+
+    global min_z
+    min_z = 0
+
+    global min_x
+    min_x = 0
+
+    global min_y
+    min_y = 0
+
+# 拿到选中物体的最小值最大值，并修改全局变量
+# 为了方便在MovePivot函数中修改轴心点时获取到
+def ComputeBoundingBox(target_object):
+    import mathutils
+    # math utilities
+
+    if target_object.type == 'MESH':
+        # 列表推导式
+        # objs = [...]
+        # obj_list = [obj for obj in objs if obj.type = 'MESH']
+
+        # TODO:通过matrix_world移动轴心点
+        world_corners = [target_object.matrix_world @ mathutils.Vector(corner) for corner in target_object.bound_box]
+        # target_object.matrix_world @ mathutils.Vector(corner)是将corner转为世界坐标
+        # target_object.matrix_world 是4x4的矩阵，用于将对象从local space转为world space
+        # @ 是矩阵乘法
+
+        # color.r     color.x
+        # color.g     color.y
+        # color.b     color.z
+
+        # Compute the min and max of each coordinate
+        global min_x
+        min_x = min(corner.x for corner in world_corners)
+        global max_x
+        max_x = max(corner.x for corner in world_corners)
+        global min_y
+        min_y = min(corner.y for corner in world_corners)
+        global max_y
+        max_y = max(corner.y for corner in world_corners)
+        global min_z
+        min_z = min(corner.z for corner in world_corners)
+        global max_z
+        max_z = max(corner.z for corner in world_corners)
+
+class SetObjectPivot(bpy.types.Operator):
+    bl_idname = "objects.set_object_pivot"
+    bl_label = "Set select object pivot"
+
+    def execute(self,context):
+        # 目标轴心点位置
+        pivot_x = 0
+        pivot_z = 0
+        pivot_y = 0
+
+        props = context.scene.second_props
+        selected_objects = bpy.context.selected_objects
+        # for item in selected_objects[0].bound_box:
+        #     print(item[0],item[1],item[2])
+        for obj in selected_objects:
+            ComputeBoundingBox(obj)     # AABB,返回xyz最大最小值
+            
+            # X
+            if(props.enum_pivot_prop_x == '0'):
+                pivot_x = max_x
+            elif(props.enum_pivot_prop_x == '1'):
+                pivot_x = 0.5 * (max_x + min_x)
+            else:
+                pivot_x = min_x
+
+            # Y
+            if(props.enum_pivot_prop_y == '0'):
+                pivot_y = max_y
+            elif(props.enum_pivot_prop_y == '1'):
+                pivot_y = 0.5 * (max_y + min_y)
+            else:
+                pivot_y = min_y
+
+            # Z
+            if(props.enum_pivot_prop_z == '0'):
+                pivot_z = max_z
+            elif(props.enum_pivot_prop_z == '1'):
+                pivot_z = 0.5 * (max_z + min_z)
+            else:
+                pivot_z = min_z
+            
+            MovePivot(pivot_x , pivot_y , pivot_z)
+        return {'FINISHED'}
+
+
 blender_classes = [
     RenameObjectOperator,
     CreateNewCollection,
     CreateCube,
     Import_Json,
     Clear_Json,
+    SetObjectPivot,
 ]
 
 def register():

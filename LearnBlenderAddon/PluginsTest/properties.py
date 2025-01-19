@@ -167,6 +167,33 @@ class SecondProperties(PropertyGroup):
         update = update_new_name,
     )
 
+# 物体轴心点
+    enum_pivot_prop_x: EnumProperty(
+        name = "",
+        items=[
+            ("0","+x",""),
+            ("1","0",""),
+            ("2","-x",""),
+        ]
+    )
+    enum_pivot_prop_y: EnumProperty(
+        name = "",
+        items=[
+            ("0","+y",""),
+            ("1","0",""),
+            ("2","-y",""),
+        ]
+    )
+    enum_pivot_prop_z: EnumProperty(
+        name = "",
+        items=[
+            ("0","+z",""),
+            ("1","0",""),
+            ("2","-z",""),
+        ]
+    )
+
+
 blender_classes = [
     SecondProperties,
 ]

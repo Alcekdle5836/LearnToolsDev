@@ -76,11 +76,32 @@ class DynamicEnum(bpy.types.Panel):
         row.label(text="新命名index：" + props.new_name_string)
         row.label(text="新命名名称：" + props.new_name_string_2)
 
+class SetPivot(bpy.types.Panel):
+    bl_idname = "SetPivot"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_label = "设置轴心点"
+    bl_category = "BaseAddons"
+
+    def draw(self,context):
+        props = context.scene.second_props
+        layout = self.layout
+        layout.label(text="设置轴心点")
+
+        row = layout.row()
+        row.prop(props,"enum_pivot_prop_x")
+        row.prop(props,"enum_pivot_prop_y")
+        row.prop(props,"enum_pivot_prop_z")
+
+        layout.operator("objects.set_object_pivot", text = "单个物体")
+
+
 blender_classes = [
     RenameObject,
     SetCollection,
     CreatePrimitive,
     DynamicEnum,
+    SetPivot,
 ]
 
 def register():
