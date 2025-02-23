@@ -1,6 +1,7 @@
 import bpy
 import json
 import mathutils
+import os
 
 json_data = []
 
@@ -244,6 +245,52 @@ class SetObjectPivot(bpy.types.Operator):
             MovePivot(pivot_x , pivot_y , pivot_z)
         return {'FINISHED'}
 
+# 导出fbx文件：保证进入unity的时候，所有的rotation都是0
+class Export_FBX(bpy.types.Operator) : 
+    bl_idname = "file.fbx_export"
+    bl_label = "Export_FBX"
+    # 这里也可以声明变量，用于存储导出参数
+    filename_ext = ".fbx"
+
+    def execute(self, context):
+        props = bpy.context.scene.second_props
+        selected_objects = context.selected_objects
+        
+    # 修改基础设置，确保导出的fbx文件在unity中的表现一致
+        # 查当前场景的单位系统是否为公制系统（METRIC）
+        if bpy.context.scene.unit_settings.system != 'METRIC':
+            bpy.context.scene.unit_settings.system = 'METRIC'
+        # 检查当前场景的长度单位是否为米（METERS）
+        if bpy.context.scene.unit_settings.length_unit != 'METERS':
+            bpy.context.scene.unit_settings.length_unit = 'METERS'
+        # 检查当前场景的长度比例是否为1
+        if bpy.context.scene.unit_settings.scale_length != 1:
+            bpy.context.scene.unit_settings.scale_length = 1
+
+        if not selected_objects:
+            self.report({'ERROR'}, "No object selected")
+        if not os.path.exists(props.fbx_export_path):
+            os.makedirs(props.fbx_export_path)
+            self.report({'INFO'}, "Create Folder Successfully !")
+
+        for obj in selected_objects:
+            # join，将两个字符串连接起来，添加斜杠
+            filepath = os.path.join(props.fbx_export_path, obj.name + self.filename_ext)
+            # https://docs.blender.org/api/current/bpy.ops.export_scene.html
+            bpy.ops.export_scene.fbx(
+                filepath=filepath,
+                path_mode='RELATIVE',
+                use_selection=True,
+                apply_unit_scale=True,
+                axis_forward="-Z",
+                axis_up="Y",
+                global_scale=1.0,
+                use_space_transform=True,
+                apply_scale_options="FBX_SCALE_UNITS",
+                bake_space_transform=True,
+            )
+            self.report({'INFO'}, f"{obj.name} : Export Fbx Successfully !")
+        return {'FINISHED'}
 
 blender_classes = [
     RenameObjectOperator,
@@ -252,6 +299,7 @@ blender_classes = [
     Import_Json,
     Clear_Json,
     SetObjectPivot,
+    Export_FBX,
 ]
 
 def register():

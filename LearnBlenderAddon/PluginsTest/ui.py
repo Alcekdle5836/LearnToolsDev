@@ -95,6 +95,19 @@ class SetPivot(bpy.types.Panel):
 
         layout.operator("objects.set_object_pivot", text = "单个物体")
 
+class ExportFbx(bpy.types.Panel):
+    bl_idname = "ExportFbx"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_label = "导出FBX"
+    bl_category = "BaseAddons"
+
+    def draw(self,context):
+        props = context.scene.second_props
+        layout = self.layout
+        layout.label(text="导出FBX")
+        layout.prop(props,"path_project_string",text="导出路径")
+        layout.operator("file.fbx_export",text="导出FBX")
 
 blender_classes = [
     RenameObject,
@@ -102,6 +115,7 @@ blender_classes = [
     CreatePrimitive,
     DynamicEnum,
     SetPivot,
+    ExportFbx,
 ]
 
 def register():

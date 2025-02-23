@@ -32,6 +32,12 @@ def get_new_name(self , context):
     name_json_3 = self.enum_branch_4_prop
     return name_json_1  + ' / ' + name_json_2 + ' / ' + name_json_3
 
+def get_fbx_export_path(self):
+    pathExport = self.path_project_string
+    # pathExport = self.path_project_string + "/Art/MapSources/Architecture/LiDanYang/" + bpy.context.active_object.name.split("_")[0] + "/" + bpy.context.active_object.name.split("_")[1] + "/" + bpy.context.active_object.name.split("_")[0] + "_" + bpy.context.active_object.name.split("_")[1] + "_" + bpy.context.active_object.name.split("_")[2] + "/" + "Fbx" + "/" + "High"
+    # pathExport = self.path_project_string + "/Art/MapSources/Architecture/LiDanYang/" + str(functions.name_fbx_1) + "/" + str(functions.name_fbx_2) + "/" + str(functions.name_fbx_1) + "_" + str(functions.name_fbx_2) + "_" + str(functions.name_fbx_3) + "/" + "Fbx" + "/" + "High"
+    return pathExport
+
 def update_new_name(self , context):
     self.new_name_string = self.enum_branch_1_prop + ' / ' + self.enum_branch_2_prop + ' / ' + self.enum_branch_4_prop
     self.new_name_string_2 = get_new_name(self,context)
@@ -121,6 +127,21 @@ class SecondProperties(PropertyGroup):
         # TODO:默认路径
         default = r"LearnToolsDev/LearnBlenderAddon/Script/NewPattern.json",
         subtype = 'FILE_PATH',              # 用于添加文件夹图标
+    )
+
+    # 项目路径
+    path_project_string : StringProperty(
+        name = "",
+        default = "E:/Unity Projects/SESUN_HDRP/Assets",
+        subtype = 'FILE_PATH',
+    )
+
+    # fbx导出路径
+    fbx_export_path : StringProperty(
+        name = "",
+        default="请先导入Json",
+        # FIXME:如何持续回调函数？
+        get = get_fbx_export_path
     )
 
     # json数据是否已导入
